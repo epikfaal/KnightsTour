@@ -39,22 +39,18 @@ Knight::Knight()
 	printf(currentTile->getName());
 	printf("\n");
 
-	//start looking for moves
-	/*int moves = findPossibleMoves();
-	printf("Possible moves are: \n");
-	for (int i = 0; i < moves; i++){
-		printf(currentPossibleMoves[i]->getName());
-		printf("\n");
-	}*/
+
 	while (true){
 		loop();
-		if (depth == 64){
+		if (depth == 63){
 			break;
 		}
 	}
-	printf("yay we did it");
-	for (int i = 0; i < 64; i++){
-		printf("Move %i: %c \n", i, movelist[i]);
+	printf("yay we did it\n");
+	for (int i = 0; i < 63; i++){
+		printf("Move %i: ", i);
+		printf(movelist[i]);
+		printf("\n");
 	}
 }
 
@@ -63,8 +59,8 @@ Knight::~Knight()
 {
 }
 
-int Knight::findPossibleMoves(){
-
+int Knight::fillPossibleMoves(){
+	tiedOptions = false;
 	int possiblemoves = 0;
 	int currentx = currentTile->getX();
 	int currenty = currentTile->getY();
@@ -128,12 +124,100 @@ int Knight::findPossibleMoves(){
 			}
 		}
 	}
+
+	// going to sort the array from least possible moves to most possible moves so it tries the least possible first according to Warnsdorf's rule
+	int movepossibilities[8];
+	for (int i = 0; i < possiblemoves; i++){
+		movepossibilities[i] = findPossibleMoves(currentPossibleMoves[i]);
+	}
+	// doing exchange sort for the array
+	for (int i = 0; i < possiblemoves - 1; i++){
+		for (int j = i + 1; j < possiblemoves; j++){
+			if (movepossibilities[i] > movepossibilities[j]){
+
+				int temp = movepossibilities[i];
+				movepossibilities[i] = movepossibilities[j];
+				movepossibilities[j] = temp;
+
+				Tile* tempTile = currentPossibleMoves[i];
+				currentPossibleMoves[i] = currentPossibleMoves[j];
+				currentPossibleMoves[j] = tempTile;
+			}
+		}
+	}
+	//if there are no ties set nextmove to 9 so the other paths from this point will not be explored
+	if (possiblemoves > nextmove[depth]){
+		if (movepossibilities[nextmove[depth]] != movepossibilities[nextmove[depth] + 1]){
+			tiedOptions = true;
+		}
+	}
 	return possiblemoves;
 }
 
+int Knight::findPossibleMoves(Tile* referenceTile){
+
+	int possiblemoves = 0;
+	int currentx = referenceTile->getX();
+	int currenty = referenceTile->getY();
+
+	if (currentx - 2 >= 0){
+		if (currenty - 1 >= 0){
+			if (!tilelist->grid[currentx - 2][currenty - 1]->isVisited()){
+				possiblemoves++;
+			}
+		}
+		if (currenty + 1 <= 7){
+			if (!tilelist->grid[currentx - 2][currenty + 1]->isVisited()){
+				possiblemoves++;
+			}
+		}
+	}
+
+	if (currentx + 2 <= 7){
+		if (currenty - 1 >= 0){
+			if (!tilelist->grid[currentx + 2][currenty - 1]->isVisited()){
+				possiblemoves++;
+			}
+		}
+		if (currenty + 1 <= 7){
+			if (!tilelist->grid[currentx + 2][currenty + 1]->isVisited()){
+				possiblemoves++;
+			}
+		}
+	}
+
+	if (currenty - 2 >= 0){
+		if (currentx - 1 >= 0){
+			if (!tilelist->grid[currentx - 1][currenty - 2]->isVisited()){
+				possiblemoves++;
+			}
+		}
+		if (currentx + 1 <= 7){
+			if (!tilelist->grid[currentx + 1][currenty - 2]->isVisited()){
+				possiblemoves++;
+			}
+		}
+	}
+
+	if (currenty + 2 <= 7){
+		if (currentx - 1 >= 0){
+			if (!tilelist->grid[currentx - 1][currenty + 2]->isVisited()){
+				possiblemoves++;
+			}
+		}
+		if (currentx + 1 <= 7){
+			if (!tilelist->grid[currentx + 1][currenty + 2]->isVisited()){
+				possiblemoves++;
+			}
+		}
+	}
+	return possiblemoves;
+}
+
+
 bool Knight::loop() {
 	stepsrequired++;
-	if (findPossibleMoves() > nextmove[depth]){
+	if (fillPossibleMoves() > nextmove[depth]){
 		makeMove(nextmove[depth]);
 	}
 	else {
@@ -146,9 +230,13 @@ bool Knight::loop() {
 void Knight::makeMove(int moveNumber){
 	movelist[depth] = currentTile->getName();
 	nextmove[depth]++;
+	if (tiedOptions) nextmove[depth] = 9;
 	depth++;
 	currentTile = currentPossibleMoves[moveNumber];
 	currentTile->setVisited(true);
+	printf("The knight moves to ");
+	printf(currentTile->getName());
+	printf("\n");
 }
 
 void Knight::revertMove(){
@@ -156,4 +244,7 @@ void Knight::revertMove(){
 	depth--;
 	currentTile->setVisited(false);
 	currentTile = tilelist->GetTileByName(movelist[depth]);
+	printf("The knight moves back to ");
+	printf(currentTile->getName());
+	printf("\n");
 }

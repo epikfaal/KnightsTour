@@ -26,8 +26,10 @@ private:
 	int nextmove[64];
 	Tile* currentPossibleMoves[8];
 	Tile* currentTile;
+	bool tiedOptions;
 	
-	int findPossibleMoves(); 
+	int findPossibleMoves(Tile* referenceTile);
+	int fillPossibleMoves(); 
 	void makeMove(int moveNumber);
 	void revertMove();
 	bool loop();
