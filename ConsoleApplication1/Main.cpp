@@ -9,8 +9,11 @@ int main(){
 	std::string startingposition;
 
 	std::cout << "Please enter the knights starting position (type \"random\" for random)" << std::endl;
-	std::cin >> startingposition;
-	if(!knight->startPath(startingposition.c_str())) exit(0);
+	while (true){
+		std::cin >> startingposition;
+		if (knight->startPath(startingposition.c_str())) break;
+		std::cout << "the starting position you chose is not a square on the field the format is (letter)(number) example \"c8\"" << std::endl;
+	}
 
 	knight->printBoard(8);
 	knight->printBoard(7);
