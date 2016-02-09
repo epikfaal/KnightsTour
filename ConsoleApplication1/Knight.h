@@ -37,6 +37,7 @@ public:
 	void startPath(Tile startingtile);
 	void startPath(int startingx, int startingy);
 	void startPath(char* startingname);
+	void printBoard(int row);
 	Knight();
 	~Knight();
 };

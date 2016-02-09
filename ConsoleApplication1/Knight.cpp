@@ -43,6 +43,7 @@ Knight::Knight()
 	while (true){
 		loop();
 		if (depth == 63){
+			movelist[depth] = currentTile->getName();
 			break;
 		}
 	}
@@ -247,4 +248,47 @@ void Knight::revertMove(){
 	printf("The knight moves back to ");
 	printf(currentTile->getName());
 	printf("\n");
+}
+
+// print the board, this is a stupid teacher requirement, you can ignore if you want (adviced)
+void Knight::printBoard(int row){
+	size_t cols = 8; // placeholder, will get boardwidth when it is customisable later
+	size_t width = (cols * 5) + 1;
+	char* dashedline;
+	dashedline = (char*) malloc(width + 2); // the reason you need an extra byte is so you can specify the end of the string
+	for (int i = 0; i < width; i++){
+		dashedline[i] = '-' ;
+	}
+	dashedline[width] = '\n';
+	dashedline[width + 1] = '\0';
+
+	if (row == 8) printf(dashedline); // TODO switch 8 with number of rows
+	
+
+	printf("|");
+	for (int i = 0; i < cols; i++){
+		const char* name = tilelist->grid[row - 1][i]->getName();
+		int movenumber;
+		for (int j = 0; j < 64; j++){
+			if (movelist[j] == name){
+				movenumber = j;
+				break;
+			}
+		};
+		if (movenumber > 9){
+			printf(" %i |", movenumber);
+		}
+		else {
+			if (movenumber == 0){
+				printf(" XX |");
+			}
+			else {
+				printf(" 0%i |", movenumber);
+			}
+		}
+	}
+	printf("\n");
+	printf(dashedline);
+
+	delete dashedline;
 }
