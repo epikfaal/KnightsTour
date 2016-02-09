@@ -7,7 +7,7 @@ Knight::Knight()
 	srand(time(NULL));
 
 	// Create the board
-	tilelist = new TileList();
+	/*tilelist = new TileList();
 	char letters[8] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
 	for (int x = 0; x < 8; x++){
 		for (int y = 0; y < 8; y++){
@@ -20,7 +20,7 @@ Knight::Knight()
 			printf(tilelist->list[((x * 8) + y)]->getName());
 			printf("\n");
 		}
-	}
+	}*/
 
 	
 }
@@ -43,7 +43,7 @@ int Knight::fillPossibleMoves(){
 				possiblemoves++;
 			}
 		}
-		if (currenty + 1 <= 7){
+		if (currenty + 1 < boardheight){
 			if (!tilelist->grid[currentx - 2][currenty + 1]->isVisited()){
 				currentPossibleMoves[possiblemoves] = tilelist->grid[currentx - 2][currenty + 1];
 				possiblemoves++;
@@ -51,14 +51,14 @@ int Knight::fillPossibleMoves(){
 		}
 	}
 
-	if (currentx + 2 <= 7){
+	if (currentx + 2 < boardwidth){
 		if (currenty - 1 >= 0){
 			if (!tilelist->grid[currentx + 2][currenty - 1]->isVisited()){
 				currentPossibleMoves[possiblemoves] = tilelist->grid[currentx + 2][currenty - 1];
 				possiblemoves++;
 			}
 		}
-		if (currenty + 1 <= 7){
+		if (currenty + 1 < boardheight){
 			if (!tilelist->grid[currentx + 2][currenty + 1]->isVisited()){
 				currentPossibleMoves[possiblemoves] = tilelist->grid[currentx + 2][currenty + 1];
 				possiblemoves++;
@@ -73,7 +73,7 @@ int Knight::fillPossibleMoves(){
 				possiblemoves++;
 			}
 		}
-		if (currentx + 1 <= 7){
+		if (currentx + 1 < boardwidth){
 			if (!tilelist->grid[currentx + 1][currenty - 2]->isVisited()){
 				currentPossibleMoves[possiblemoves] = tilelist->grid[currentx + 1][currenty - 2];
 				possiblemoves++;
@@ -81,14 +81,14 @@ int Knight::fillPossibleMoves(){
 		}
 	}
 
-	if (currenty + 2 <= 7){
+	if (currenty + 2 < boardheight){
 		if (currentx - 1 >= 0){
 			if (!tilelist->grid[currentx - 1][currenty + 2]->isVisited()){
 				currentPossibleMoves[possiblemoves] = tilelist->grid[currentx - 1][currenty + 2];
 				possiblemoves++;
 			}
 		}
-		if (currentx + 1 <= 7){
+		if (currentx + 1 < boardwidth){
 			if (!tilelist->grid[currentx + 1][currenty + 2]->isVisited()){
 				currentPossibleMoves[possiblemoves] = tilelist->grid[currentx + 1][currenty + 2];
 				possiblemoves++;
@@ -116,12 +116,13 @@ int Knight::fillPossibleMoves(){
 			}
 		}
 	}
-	//if there are no ties set nextmove to 9 so the other paths from this point will not be explored
-	if (possiblemoves > nextmove[depth]){
+
+	// set flag for tied options
+	/*if (possiblemoves > nextmove[depth]){
 		if (movepossibilities[nextmove[depth]] != movepossibilities[nextmove[depth] + 1]){
 			tiedOptions = true;
 		}
-	}
+	}*/
 	return possiblemoves;
 }
 
@@ -137,20 +138,20 @@ int Knight::findPossibleMoves(Tile* referenceTile){
 				possiblemoves++;
 			}
 		}
-		if (currenty + 1 <= 7){
+		if (currenty + 1 < boardheight){
 			if (!tilelist->grid[currentx - 2][currenty + 1]->isVisited()){
 				possiblemoves++;
 			}
 		}
 	}
 
-	if (currentx + 2 <= 7){
+	if (currentx + 2 < boardwidth){
 		if (currenty - 1 >= 0){
 			if (!tilelist->grid[currentx + 2][currenty - 1]->isVisited()){
 				possiblemoves++;
 			}
 		}
-		if (currenty + 1 <= 7){
+		if (currenty + 1 < boardheight){
 			if (!tilelist->grid[currentx + 2][currenty + 1]->isVisited()){
 				possiblemoves++;
 			}
@@ -163,20 +164,20 @@ int Knight::findPossibleMoves(Tile* referenceTile){
 				possiblemoves++;
 			}
 		}
-		if (currentx + 1 <= 7){
+		if (currentx + 1 < boardwidth){
 			if (!tilelist->grid[currentx + 1][currenty - 2]->isVisited()){
 				possiblemoves++;
 			}
 		}
 	}
 
-	if (currenty + 2 <= 7){
+	if (currenty + 2 < boardheight){
 		if (currentx - 1 >= 0){
 			if (!tilelist->grid[currentx - 1][currenty + 2]->isVisited()){
 				possiblemoves++;
 			}
 		}
-		if (currentx + 1 <= 7){
+		if (currentx + 1 < boardwidth){
 			if (!tilelist->grid[currentx + 1][currenty + 2]->isVisited()){
 				possiblemoves++;
 			}
@@ -187,6 +188,7 @@ int Knight::findPossibleMoves(Tile* referenceTile){
 
 
 bool Knight::loop() {
+	if (nextmove[depth] < 0) nextmove[depth] = 0;
 	stepsrequired++;
 	if (fillPossibleMoves() > nextmove[depth]){
 		makeMove(nextmove[depth]);
@@ -201,6 +203,8 @@ bool Knight::loop() {
 void Knight::makeMove(int moveNumber){
 	movelist[depth] = currentTile->getName();
 	nextmove[depth]++;
+
+	// if there are tied options, set nextmove to 9 so it won't explore aditional options
 	if (tiedOptions) nextmove[depth] = 9;
 	depth++;
 	currentTile = currentPossibleMoves[moveNumber];
@@ -222,7 +226,7 @@ void Knight::revertMove(){
 
 // print the board, this is a stupid teacher requirement, you can ignore if you want (adviced)
 void Knight::printBoard(int row){
-	size_t cols = 8; // placeholder, will get boardwidth when it is customisable later
+	size_t cols = boardwidth; // placeholder, will get boardwidth when it is customisable later
 	size_t width = (cols * 5) + 1;
 	char* dashedline;
 	dashedline = (char*) malloc(width + 2); // the reason you need an extra byte is so you can specify the end of the string
@@ -232,14 +236,15 @@ void Knight::printBoard(int row){
 	dashedline[width] = '\n';
 	dashedline[width + 1] = '\0';
 
-	if (row == 8) printf(dashedline); // TODO switch 8 with number of rows
+	if (row == boardheight) printf(dashedline); // TODO switch 8 with number of rows
 	
 
 	printf("|");
 	for (int i = 0; i < cols; i++){
-		const char* name = tilelist->grid[row - 1][i]->getName();
+		const char* name = tilelist->grid[i][row - 1]->getName();
 		int movenumber;
-		for (int j = 0; j < 64; j++){
+		for (int j = 0; j < boardheight * boardwidth; j++){
+			// reason we check like this is because they should both point to same string
 			if (movelist[j] == name){
 				movenumber = j;
 				break;
@@ -266,7 +271,7 @@ void Knight::printBoard(int row){
 bool Knight::startPath(const char* startingName){
 	// Place the Knight at a random position
 	if (strcmp(startingName, "random") == 0){
-		int field = 64; // TODO change 64 with board size once that is customizable
+		int field = boardheight * boardwidth; 
 		currentTile = tilelist->list[rand() % field];
 	}
 	else{
@@ -287,16 +292,65 @@ bool Knight::startPath(const char* startingName){
 
 	while (true){
 		loop();
-		if (depth == 63){
+		if (depth == (boardheight * boardwidth) - 1) {
 			movelist[depth] = currentTile->getName();
 			break;
 		}
 	}
 	printf("yay we did it\n");
-	for (int i = 0; i < 63; i++){
+	for (int i = 0; i < (boardheight * boardwidth) - 1; i++){
 		printf("Move %i: ", i);
 		printf(movelist[i]);
 		printf("\n");
 	}
+	return true;
+}
+
+bool Knight::initBoard(int width, int height){
+	printf("size of Tile**: %i\n", sizeof(Tile**));
+	printf("size of Tile*: %i\n", sizeof(Tile*));
+	printf("size of Tile: %i\n", sizeof(Tile));
+	printf("size of int: %i\n", sizeof(int));
+	printf("size of char: %i\n", sizeof(char));
+	
+	boardwidth = width;
+	boardheight = height;
+
+	nextmove = (int*)malloc(width * height * sizeof(int));
+	int number = 0;
+	while (number < width * height - 8){
+		nextmove[number] = 0;
+		number++;
+	}
+	nextmove[number] = 0;
+	movelist = (const char**)malloc(width * height);
+
+	tilelist = new TileList();
+
+	tilelist->list = (Tile**)malloc(width * height * sizeof(Tile*));
+
+	tilelist->grid = (Tile***) malloc(width * sizeof(Tile**));
+	for (int i = 0; i < width; i++){
+		tilelist->grid[i] = (Tile**)malloc(height * sizeof(Tile*));
+	}
+
+	
+	char letters[26] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+	
+
+	for (int x = 0; x < width; x++){
+		for (int y = 0; y < height; y++){
+			char name[4];
+			sprintf_s(name, "%c%i", letters[y], x + 1);
+			Tile* tempTile = new Tile(x, y, name);
+			tilelist->grid[x][y] = tempTile;
+			tilelist->list[((x * height) + y)] = tempTile;
+			printf("created tile ");
+			printf(tempTile->getName());
+			printf("\n");
+		}
+	}
+	boardinit = true;
 	return true;
 }
