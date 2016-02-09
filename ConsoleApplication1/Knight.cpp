@@ -342,7 +342,7 @@ bool Knight::initBoard(int width, int height){
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
 			char name[4];
-			sprintf_s(name, "%c%i", letters[y], x + 1);
+			sprintf_s(name, "%c%i", letters[x], y + 1);
 			Tile* tempTile = new Tile(x, y, name);
 			tilelist->grid[x][y] = tempTile;
 			tilelist->list[((x * height) + y)] = tempTile;
