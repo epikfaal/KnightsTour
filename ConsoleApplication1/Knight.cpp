@@ -22,31 +22,7 @@ Knight::Knight()
 		}
 	}
 
-	// Place the Knight at a random position
-	int field = 64; // TODO change 64 with board size once that is customizable
-	currentTile = tilelist->list[rand() % field];
-	currentTile->setVisited(true);
-	movelist[0] = currentTile->getName();
-
-	// Print the Knights starting location
-	printf("The knight starts at ");
-	printf(currentTile->getName());
-	printf("\n");
-
-
-	while (true){
-		loop();
-		if (depth == 63){
-			movelist[depth] = currentTile->getName();
-			break;
-		}
-	}
-	printf("yay we did it\n");
-	for (int i = 0; i < 63; i++){
-		printf("Move %i: ", i);
-		printf(movelist[i]);
-		printf("\n");
-	}
+	
 }
 
 
@@ -285,4 +261,42 @@ void Knight::printBoard(int row){
 	printf(dashedline);
 
 	delete dashedline;
+}
+
+bool Knight::startPath(const char* startingName){
+	// Place the Knight at a random position
+	if (strcmp(startingName, "random") == 0){
+		int field = 64; // TODO change 64 with board size once that is customizable
+		currentTile = tilelist->list[rand() % field];
+	}
+	else{
+		currentTile = tilelist->GetTileByName(startingName);
+		if (currentTile == nullptr){
+			return false;
+		}
+	}
+
+	currentTile->setVisited(true);
+	movelist[0] = currentTile->getName();
+
+	// Print the Knights starting location
+	printf("The knight starts at ");
+	printf(currentTile->getName());
+	printf("\n");
+
+
+	while (true){
+		loop();
+		if (depth == 63){
+			movelist[depth] = currentTile->getName();
+			break;
+		}
+	}
+	printf("yay we did it\n");
+	for (int i = 0; i < 63; i++){
+		printf("Move %i: ", i);
+		printf(movelist[i]);
+		printf("\n");
+	}
+	return true;
 }

@@ -8,10 +8,11 @@ struct TileList{
 	Tile* list[64];
 	Tile* GetTileByName(const char* name){
 		for (int i = 0; i < 64; i++){
-			if(this->list[i]->getName() == name){
+			if(strcmp(this->list[i]->getName(), name) == 0){
 				return list[i];
 			}
 		}
+		return nullptr;
 	};
 	
 };
@@ -34,9 +35,9 @@ private:
 	void revertMove();
 	bool loop();
 public:
-	void startPath(Tile startingtile);
-	void startPath(int startingx, int startingy);
-	void startPath(char* startingname);
+	//void startPath(Tile startingtile);
+	//bool startPath(int startingx, int startingy);
+	bool startPath(const char* startingname);
 	void printBoard(int row);
 	Knight();
 	~Knight();
