@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <cstdlib>
+#include <iostream>
 #include "Knight.h"
-#include <Windows.h>
 
 
-int main(HINSTANCE module, HINSTANCE, PWSTR, int){
+int main(){
 	Knight* knight = new Knight();
 	knight->printBoard(8);
 	knight->printBoard(7);

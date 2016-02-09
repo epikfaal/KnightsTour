@@ -23,15 +23,9 @@ Knight::Knight()
 	}
 
 	// Place the Knight at a random position
-	int field = 64;
-	while (true){
-		if (rand() % field == 0){
-			currentTile = tilelist->list[field - 1];
-			currentTile->setVisited(true);
-			break;
-		}
-		field--;
-	}
+	int field = 64; // TODO change 64 with board size once that is customizable
+	currentTile = tilelist->list[rand() % field];
+	currentTile->setVisited(true);
 	movelist[0] = currentTile->getName();
 
 	// Print the Knights starting location
