@@ -236,7 +236,7 @@ void Knight::printBoard(int row){
 	dashedline[width] = '\n';
 	dashedline[width + 1] = '\0';
 
-	if (row == boardheight) printf(dashedline); // TODO switch 8 with number of rows
+	if (row == boardheight) printf(dashedline); 
 	
 
 	printf("|");
@@ -323,7 +323,7 @@ bool Knight::initBoard(int width, int height){
 		number++;
 	}
 	nextmove[number] = 0;
-	movelist = (const char**)malloc(width * height);
+	movelist = (const char**)malloc(width * height * sizeof(const char*));
 
 	tilelist = new TileList();
 
