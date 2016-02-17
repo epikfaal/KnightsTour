@@ -3,20 +3,9 @@
 #include <string>
 #include <cstring>
 #include <time.h>
-/*struct TileList{
-	Tile* grid[8][8];
-	Tile* list[64];
-	Tile* GetTileByName(const char* name){
-		for (int i = 0; i < 64; i++){
-			if(strcmp(this->list[i]->getName(), name) == 0){
-				return list[i];
-			}
-		}
-		return nullptr;
-	};
-	
-};*/
-struct /*Variable*/TileList{
+
+struct TileList{
+	int boardwidth, boardheight;
 	Tile*** grid;
 	Tile** list;
 	Tile* GetTileByName(const char* name){
@@ -26,8 +15,8 @@ struct /*Variable*/TileList{
 				return list[i];
 			}
 			i++;
+			if (i == boardheight * boardwidth) return nullptr;
 		}
-		return nullptr;
 	};
 };
 class Knight
@@ -36,7 +25,6 @@ class Knight
 private:
 	int stepsrequired;
 	int depth;
-	int boardwidth, boardheight;
 	struct TileList* tilelist;
 	//struct VariableTileList* vartilelist;
 	const char** movelist;
@@ -48,15 +36,18 @@ private:
 	
 	int findPossibleMoves(Tile* referenceTile);
 	int fillPossibleMoves(); 
+	void showDigitsInNumber(int* digits, int number);
+	void sortMovesAscendingByScore(int* scorearray, int array);
 	void makeMove(int moveNumber);
 	void revertMove();
 	bool loop();
+	void printRow(int row);
 public:
 	//void startPath(Tile startingtile);
 	//bool startPath(int startingx, int startingy);
 	bool initBoard(int width, int height);
-	bool startPath(const char* startingname);
-	void printBoard(int row);
+	int startPath(const char* startingname);
+	void printBoard();
 	Knight();
 	~Knight();
 };
