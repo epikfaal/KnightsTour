@@ -26,13 +26,11 @@ private:
 	int stepsrequired;
 	int depth;
 	struct TileList* tilelist;
-	//struct VariableTileList* vartilelist;
 	const char** movelist;
 	int* nextmove;
 	Tile* currentPossibleMoves[8];
 	Tile* currentTile;
 	bool tiedOptions;
-	bool boardinit = false;
 	
 	int findPossibleMoves(Tile* referenceTile);
 	int fillPossibleMoves(); 

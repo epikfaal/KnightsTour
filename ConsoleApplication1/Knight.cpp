@@ -15,6 +15,20 @@ Knight::Knight()
 
 Knight::~Knight()
 {
+	if (nextmove) free(nextmove);
+	if (movelist) free(movelist);
+	if (tilelist->list){
+		for (int i = 0; i < tilelist->boardheight * tilelist->boardwidth; i++){
+			delete tilelist->list[i];
+		}
+		free(tilelist->list);
+	}
+	if (tilelist->grid){
+		for (int i = 0; i < tilelist->boardwidth; i++){
+			free(tilelist->grid[i]);
+		}
+		free(tilelist->grid);
+	}
 }
 
 int Knight::fillPossibleMoves(){
@@ -323,10 +337,27 @@ int Knight::startPath(const char* startingName){
 }
 
 bool Knight::initBoard(int width, int height){
-	
+	// fix memory leak
+	if (nextmove) free(nextmove);
+	if (movelist) free(movelist);
+	if (tilelist->list){
+		for (int i = 0; i < tilelist->boardheight * tilelist->boardwidth; i++){
+			delete tilelist->list[i];
+		}
+		free(tilelist->list);
+	}
+	if (tilelist->grid){
+		for (int i = 0; i < tilelist->boardwidth; i++){
+			free(tilelist->grid[i]);
+		}
+		free(tilelist->grid);
+	}
+
+	// set the widht and height of the board
 	tilelist->boardwidth = width;
 	tilelist->boardheight = height;
 
+	// initialize all the arrays with the now known width and height
 	nextmove = (int*)malloc(width * height * sizeof(int));
 	int number = 0;
 	while (number < width * height - 8){
@@ -348,7 +379,7 @@ bool Knight::initBoard(int width, int height){
 	char letters[26] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
 	
-
+	// fill the tilelist with actual tiles
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
 			char name[4];
@@ -356,11 +387,7 @@ bool Knight::initBoard(int width, int height){
 			Tile* tempTile = new Tile(x, y, name);
 			tilelist->grid[x][y] = tempTile;
 			tilelist->list[((x * height) + y)] = tempTile;
-			printf("created tile ");
-			printf(tempTile->getName());
-			printf("\n");
 		}
 	}
-	boardinit = true;
 	return true;
 }
