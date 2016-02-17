@@ -41,8 +41,6 @@ private:
 	bool loop();
 	void printRow(int row);
 public:
-	//void startPath(Tile startingtile);
-	//bool startPath(int startingx, int startingy);
 	bool initBoard(int width, int height);
 	int startPath(const char* startingname);
 	void printBoard();

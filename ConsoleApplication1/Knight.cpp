@@ -12,7 +12,7 @@ Knight::Knight()
 	
 }
 
-
+// releases all the pointers
 Knight::~Knight()
 {
 	if (nextmove) free(nextmove);
@@ -29,8 +29,10 @@ Knight::~Knight()
 		}
 		free(tilelist->grid);
 	}
+	delete tilelist;
 }
 
+// fills the currentPossibleMoves array with moves sorted by warndorfs rule
 int Knight::fillPossibleMoves(){
 	tiedOptions = false;
 	int possiblemoves = 0;
@@ -114,7 +116,7 @@ int Knight::fillPossibleMoves(){
 	}
 	return possiblemoves;
 }
-
+// sorts the moves according to warndors rule
 void Knight::sortMovesAscendingByScore(int* scorearray, int arraylength){
 	for (int i = 0; i < arraylength - 1; i++){
 		for (int j = i + 1; j < arraylength; j++){
@@ -132,6 +134,7 @@ void Knight::sortMovesAscendingByScore(int* scorearray, int arraylength){
 	}
 }
 
+//returns possible moves of tile
 int Knight::findPossibleMoves(Tile* referenceTile){
 
 	int possiblemoves = 0;
@@ -213,12 +216,11 @@ void Knight::makeMove(int moveNumber){
 	// if there are no tied options, set nextmove to 9 so it won't explore aditional options reduces 5x5 board starting position b4 from 682 to 54 steps
 	if (tiedOptions) nextmove[depth] = 9;
 	depth++;
-	//printBoard();
 	currentTile = currentPossibleMoves[moveNumber];
 	currentTile->setVisited(true);
-	//printf("The knight moves to ");
-	//printf(currentTile->getName());
-	//printf("\n");
+	printf("The knight moves to ");
+	printf(currentTile->getName());
+	printf("\n");
 }
 
 void Knight::revertMove(){
@@ -226,9 +228,9 @@ void Knight::revertMove(){
 	depth--;
 	currentTile->setVisited(false);
 	currentTile = tilelist->GetTileByName(movelist[depth]);
-	//printf("The knight moves back to ");
-	//printf(currentTile->getName());
-	//printf("\n");
+	printf("The knight moves back to ");
+	printf(currentTile->getName());
+	printf("\n");
 }
 
 // print the board, this is a stupid teacher requirement, you can ignore if you want (adviced)
@@ -238,6 +240,7 @@ void Knight::printBoard(){
 
 }
 
+// add the digits in a number digits should be a reference
 void Knight::showDigitsInNumber(int* digits, int number){
 	if (number > 9) showDigitsInNumber(digits, number / 10);
 	*digits = *digits + 1; // *digits++ didn't work
@@ -265,8 +268,8 @@ void Knight::printRow(int row){
 	for (int i = 0; i < cols; i++){
 		const char* name = tilelist->grid[i][row - 1]->getName();
 		int movenumber;
-		for (int j = 0; j < /*tilelist->boardheight * tilelist->boardwidth*/depth; j++){
-			// reason we check like this is because they should both point to same string
+		for (int j = 0; j < depth; j++){
+			// reason we check like this is because they should both point to same memory anyway
 			if (movelist[j] == name){
 				movenumber = j;
 				break;
@@ -284,7 +287,7 @@ void Knight::printRow(int row){
 	printf("\n");
 	printf(dashedline);
 
-	delete dashedline;
+	delete dashedline; // make sure there are no memory leaks
 }
 
 int Knight::startPath(const char* startingName){
@@ -301,12 +304,15 @@ int Knight::startPath(const char* startingName){
 			}
 		}
 	}
+	// Place the night at given name
 	else{
 		currentTile = tilelist->GetTileByName(startingName);
+		// If the given name cannot be found return errorcode 1
 		if (currentTile == nullptr){
 			return 1;
 		}
 	}
+	// if there are no knightstours possible with given starting square and boardsize size return errorcode 2
 	if ((currentTile->getX() + currentTile->getY()) % 2 == 1 && (tilelist->boardheight * tilelist->boardwidth % 2) == 1){
 		return 2;
 	}
@@ -319,7 +325,7 @@ int Knight::startPath(const char* startingName){
 	printf(currentTile->getName());
 	printf("\n");
 
-
+	// Keep looping until you filled all the moves then add the last move to the list
 	while (true){
 		loop();
 		if (depth == (tilelist->boardheight * tilelist->boardwidth) - 1) {
@@ -327,7 +333,8 @@ int Knight::startPath(const char* startingName){
 			break;
 		}
 	}
-	printf("yay we did it\n");
+
+	// print all the moves
 	for (int i = 0; i < (tilelist->boardheight * tilelist->boardwidth) - 1; i++){
 		printf("Move %i: ", i);
 		printf(movelist[i]);
