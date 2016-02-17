@@ -20,6 +20,7 @@ int main(){
 		}
 		else if (width > 26 || height > 99){
 			std::cout << "The maximum width is 26 and the maximum height is 99" << std::endl;
+			continue;
 		}
 		else if ((width * height) % 2 == 1){
 			std::cout << "The board size you have chosen has an odd number of squares, this means the Knight has to start at a black square e.g. a1 b2 c1 f6" << std::endl;
@@ -37,7 +38,4 @@ int main(){
 	}
 	knight->printBoard();
 	system("pause");
-
-
-
 }

@@ -114,6 +114,7 @@ int Knight::fillPossibleMoves(){
 			tiedOptions = true;
 		}
 	}
+	free(movepossibilities);
 	return possiblemoves;
 }
 // sorts the moves according to warndors rule
@@ -237,7 +238,9 @@ void Knight::revertMove(){
 void Knight::printBoard(){
 	
 	for (int i = tilelist->boardheight; i > 0; i--)	printRow(i); 
-
+	if (depth == tilelist->boardheight * tilelist->boardheight){
+		printf("The knight started at %s and after %i steps finished his KnightsTouir\n", movelist[0], stepsrequired);
+	}
 }
 
 // add the digits in a number digits should be a reference
