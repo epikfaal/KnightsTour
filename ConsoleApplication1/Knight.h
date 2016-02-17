@@ -38,7 +38,7 @@ private:
 	void sortMovesAscendingByScore(int* scorearray, int array);
 	void makeMove(int moveNumber);
 	void revertMove();
-	bool loop();
+	void loop();
 	void printRow(int row);
 public:
 	bool initBoard(int width, int height);

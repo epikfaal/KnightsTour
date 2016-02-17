@@ -197,8 +197,7 @@ int Knight::findPossibleMoves(Tile* referenceTile){
 }
 
 
-bool Knight::loop() {
-	if (nextmove[depth] < 0) nextmove[depth] = 0;
+void Knight::loop() {
 	stepsrequired++;
 	if (fillPossibleMoves() > nextmove[depth]){
 		makeMove(nextmove[depth]);
@@ -207,7 +206,6 @@ bool Knight::loop() {
 		revertMove();
 	}
 	printf("step %i \n", stepsrequired);
-	return true;
 }
 
 void Knight::makeMove(int moveNumber){
@@ -239,7 +237,7 @@ void Knight::printBoard(){
 	
 	for (int i = tilelist->boardheight; i > 0; i--)	printRow(i); 
 	if (depth == tilelist->boardheight * tilelist->boardheight){
-		printf("The knight started at %s and after %i steps finished his KnightsTouir\n", movelist[0], stepsrequired);
+		printf("The knight started at %s and after %i steps finished his KnightsTour\n", movelist[0], stepsrequired);
 	}
 }
 
@@ -363,7 +361,7 @@ bool Knight::initBoard(int width, int height){
 		free(tilelist->grid);
 	}
 
-	// set the widht and height of the board
+	// set the width and height of the board
 	tilelist->boardwidth = width;
 	tilelist->boardheight = height;
 
@@ -385,10 +383,8 @@ bool Knight::initBoard(int width, int height){
 		tilelist->grid[i] = (Tile**)malloc(height * sizeof(Tile*));
 	}
 
-	
 	char letters[26] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
-	
 	// fill the tilelist with actual tiles
 	for (int x = 0; x < width; x++){
 		for (int y = 0; y < height; y++){
